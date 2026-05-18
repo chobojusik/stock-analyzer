@@ -9,7 +9,24 @@ st.title("📈 국내 주식 분석기")
 
 user_input = st.text_input("종목명 또는 종목코드 입력", "삼성전자")
 
-listing = fdr.StockListing('KRX')
+stocks = {
+    "삼성전자": "005930",
+    "SK하이닉스": "000660",
+    "LG에너지솔루션": "373220",
+    "현대차": "005380",
+    "기아": "000270"
+}
+
+user_input = st.text_input("종목명 또는 코드 입력", "삼성전자")
+
+if user_input.isdigit():
+    code = user_input
+else:
+    code = stocks.get(user_input)
+
+    if code is None:
+        st.error("지원하지 않는 종목입니다.")
+        st.stop()
 
 # 종목코드 찾기
 if user_input.isdigit():
