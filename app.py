@@ -25,11 +25,15 @@ else:
         st.error("종목명을 찾을 수 없습니다.")
         st.stop()
 
-df = fdr.DataReader(code, '2026-01-01')
+df = fdr.DataReader(code)
+
+if df.empty:
+    st.error("데이터가 없습니다.")
+    st.stop()
 st.write(df.tail())
 current_price = df['Close'].iloc[-1]
 st.metric("현재가", f"{current_price:,}원")
-
+st.line_chart(df['Close'])
 
 
 
@@ -73,79 +77,4 @@ else:
     else:
         st.error("종목명을 찾을 수 없습니다.")
         st.stop()  
-import plotly.graph_objects as go
-from pykrx import stock
-from datetime import datetime, timedelta
-# 이동평균선
-df['MA5'] = df['Close'].rolling(5).mean()
-df['MA20'] = df['Close'].rolling(20).mean()
-df['MA60'] = df['Close'].rolling(60).mean()
-df['MA120'] = df['Close'].rolling(120).mean()
-change = df['Close'].pct_change().iloc[-1] * 100
 
-col1, col2, col3 = st.columns(3)
-
-col1.metric("현재가", f"{current_price:,.0f}원")
-col2.metric("등락률", f"{change:.2f}%")
-col3.metric("거래량", f"{df['Volume'].iloc[-1]:,.0f}")
-st.markdown("""
-🔴 5일선  
-🔵 20일선  
-🟢 60일선  
-🟠 120일선
-""")
-fig = go.Figure()
-
-# 캔들차트
-fig.add_trace(
-    go.Candlestick(
-        x=df.index,
-        open=df['Open'],
-        high=df['High'],
-        low=df['Low'],
-        close=df['Close'],
-        name='캔들',
-        increasing_line_color='red',
-        decreasing_line_color='blue'
-    )
-)
-
-# 이동평균선
-fig.add_trace(go.Scatter(
-    x=df.index,
-    y=df['MA5'],
-    line=dict(color='red'),
-    name='5일선'
-))
-
-fig.add_trace(go.Scatter(
-    x=df.index,
-    y=df['MA20'],
-    line=dict(color='blue'),
-    name='20일선'
-))
-
-fig.add_trace(go.Scatter(
-    x=df.index,
-    y=df['MA60'],
-    line=dict(color='green'),
-    name='60일선'
-))
-
-fig.add_trace(go.Scatter(
-    x=df.index,
-    y=df['MA120'],
-    line=dict(color='orange'),
-    name='120일선'
-))
-
-fig.update_layout(
-    height=1000,
-    width=1600,
-    xaxis_rangeslider_visible=False,
-
-    xaxis=dict(
-        tickformat="%Y-%m",
-        dtick="M1"
-    )
-)
