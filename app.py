@@ -7,7 +7,7 @@ st.set_page_config(layout="wide")
 
 st.title("📈 국내 주식 분석기")
 
-user_input = st.text_input("종목명 또는 종목코드 입력", "삼성전자")
+
 
 stocks = {
     "삼성전자": "005930",
@@ -28,17 +28,10 @@ else:
         st.error("지원하지 않는 종목입니다.")
         st.stop()
 
-# 종목코드 찾기
-if user_input.isdigit():
-    code = user_input
-else:
-    result = listing[listing['Name'] == user_input]
 
-    if len(result) > 0:
-        code = result.iloc[0]['Code']
-    else:
-        st.error("종목명을 찾을 수 없습니다.")
-        st.stop()
+  
+
+ 
 
 # 데이터 가져오기
 df = fdr.DataReader(code, start='2024-01-01')
