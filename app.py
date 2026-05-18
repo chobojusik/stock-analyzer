@@ -147,10 +147,10 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 # 외국인 기관 수급
 st.subheader("외국인 / 기관 수급")
-
+code = str(code).zfill(6)
 today = datetime.today()
 start = today - timedelta(days=7)
-
+code = str(code).zfill(6)
 trading = stock.get_market_trading_value_by_date(
     start.strftime("%Y%m%d"),
     today.strftime("%Y%m%d"),
