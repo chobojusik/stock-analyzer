@@ -25,7 +25,7 @@ else:
         st.error("종목명을 찾을 수 없습니다.")
         st.stop()
 
-df = fdr.DataReader(code)
+df = fdr.DataReader(code, '2026-01-01')
 st.write(df.tail())
 current_price = df['Close'].iloc[-1]
 st.metric("현재가", f"{current_price:,}원")
@@ -140,9 +140,12 @@ fig.add_trace(go.Scatter(
 ))
 
 fig.update_layout(
-    height=700,
-    xaxis_rangeslider_visible=False
+    height=1000,
+    width=1600,
+    xaxis_rangeslider_visible=False,
+
+    xaxis=dict(
+        tickformat="%Y-%m",
+        dtick="M1"
+    )
 )
-
-st.plotly_chart(fig, use_container_width=True)
-
