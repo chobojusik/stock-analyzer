@@ -37,4 +37,20 @@ else:
     else:
         st.error("종목명을 찾을 수 없습니다.")
         st.stop()
-        
+      user_input = st.text_input("종목코드 또는 종목명 입력", "005930")
+
+listing = fdr.StockListing('KRX')
+
+# 숫자면 종목코드 처리
+if user_input.isdigit():
+    code = user_input
+
+# 문자면 종목명 검색
+else:
+    result = listing[listing['Name'] == user_input]
+
+    if len(result) > 0:
+        code = result.iloc[0]['Code']
+    else:
+        st.error("종목명을 찾을 수 없습니다.")
+        st.stop()  
