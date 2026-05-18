@@ -146,23 +146,3 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-# 외국인 / 기관 수급
-st.subheader("외국인 / 기관 수급")
-
-try:
-    today = datetime.today()
-    start = today - timedelta(days=30)
-
-    trading = stock.get_market_trading_value_by_date(
-        start.strftime("%Y%m%d"),
-        today.strftime("%Y%m%d"),
-        code
-    )
-
-    st.dataframe(trading.tail(10))
-
-except Exception as e:
-    st.error("수급 데이터를 불러올 수 없습니다.")
-    st.write(e)
-
-
