@@ -39,7 +39,7 @@ st.metric("현재가", f"{current_price:,}원")
    
 
   
-user_input = st.text_input("종목명 또는 종목코드 입력", "삼성전자")
+
 
 listing = fdr.StockListing('KRX')
 
