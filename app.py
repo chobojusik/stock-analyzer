@@ -128,7 +128,29 @@ stocks = {
     "현대차": "005380",
     "기아": "000270"
 }
+favorites = [
+    "삼성전자",
+    "SK하이닉스",
+    "현대차"
+]
+# --------------------------
+# 사이드바 관심종목
+# --------------------------
 
+with st.sidebar:
+
+    st.title("⭐ 관심종목")
+
+    selected_stock = st.selectbox(
+
+        "선택",
+
+        favorites
+    )
+
+    if st.button("관심종목 불러오기"):
+
+        user_input = selected_stock
 # --------------------------
 # 검색창
 # --------------------------
@@ -158,9 +180,34 @@ else:
         st.stop()
 
 # --------------------------
+# --------------------------
+# 기간 선택
+# --------------------------
+
+period = st.radio(
+
+    "기간 선택",
+
+    ["3개월", "6개월", "1년", "3년"],
+
+    horizontal=True
+)
+
+# 기간 처리
+if period == "3개월":
+    start_date = "2025-01-01"
+
+elif period == "6개월":
+    start_date = "2024-11-01"
+
+elif period == "1년":
+    start_date = "2024-01-01"
+
+else:
+    start_date = "2022-01-01"
 # 데이터 가져오기
 # --------------------------
-df = fdr.DataReader(code, start='2024-01-01')
+df = fdr.DataReader(code, start=start_date)
 
 if df.empty:
     st.error("데이터가 없습니다.")
