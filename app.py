@@ -282,6 +282,9 @@ fig.add_trace(go.Bar(
     marker_color='rgba(37,99,235,0.25)',
     yaxis='y2'
 ))
+# 이동평균 NaN 방지
+ma20 = df['MA20'].iloc[-1]
+ma60 = df['MA60'].iloc[-1]
 
 # 20일선
 fig.add_trace(go.Scatter(
@@ -406,7 +409,77 @@ col3.metric("ROE", "10.8%")
 col4.metric("RSI", "62.4")
 
 st.divider()
+# --------------------------
+# AI 점수 계산
+# --------------------------
 
+score = 50
+
+# 20일선 위
+if ma20 == ma20:
+    if current_price > ma20:
+        score += 1
+
+# 60일선 위
+if ma60 == ma60:
+    if current_price > ma60:
+        score += 15
+
+# 거래량 증가
+if volume > df['Volume'].mean():
+    score += 10
+
+# 상승률 양수
+if change_rate > 0:
+    score += 10
+
+# 점수 제한
+score = min(score, 100)
+
+# --------------------------
+# AI 점수 카드
+# --------------------------
+
+st.subheader("🧠 AI 투자 점수")
+
+score_color = "#22c55e"
+
+if score < 40:
+    score_color = "#ef4444"
+
+elif score < 70:
+    score_color = "#f59e0b"
+
+st.markdown(f"""
+
+<div style="
+background:white;
+padding:35px;
+border-radius:24px;
+box-shadow:0 8px 25px rgba(0,0,0,0.06);
+text-align:center;
+margin-bottom:25px;
+">
+
+<h1 style="
+font-size:72px;
+color:{score_color};
+margin-bottom:0px;
+">
+{score}
+</h1>
+
+<h3 style="margin-top:0;">
+AI 종합 점수
+</h3>
+
+<p style="color:gray;">
+이동평균선 / 거래량 / 추세 기반 분석
+</p>
+
+</div>
+
+""", unsafe_allow_html=True)
 # --------------------------
 # AI 분석
 # --------------------------
