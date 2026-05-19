@@ -1,156 +1,40 @@
 import streamlit as st
 import FinanceDataReader as fdr
 import plotly.graph_objects as go
+import pandas as pd
+from pykrx import stock
+from datetime import datetime
+from streamlit_autorefresh import st_autorefresh
+st_autorefresh(interval=60000, key="refresh")
+
+
 
 # --------------------------
-# 페이지 설정
+# 전체 종목 가져오기
 # --------------------------
+
+@st.cache_data
+def load_data():
+
+    listing = fdr.StockListing('KRX')
+
+    listing = listing.drop_duplicates(subset='Code')
+
+    return listing
+
+listing = load_data()
 st.set_page_config(
-    page_title="네이버 스타일 주식 분석기",
+    page_title="AI 국내주식 분석기",
     layout="wide"
 )
-st.markdown("""
-<style>
 
-/* 전체 배경 */
-.main {
-    background-color: #f5f7fb;
-}
+st.title("📈 AI 국내주식 분석기")
+st.caption("실시간 코스피 · 코스닥 분석")
+# 종목명 리스트
+stock_names = sorted(
+    listing['Name'].astype(str).tolist()
+)
 
-/* 전체 여백 */
-.block-container {
-    padding-top: 2rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-}
-
-/* 제목 */
-h1 {
-    font-size: 42px;
-    font-weight: 800;
-    color: #111827;
-}
-
-/* metric 카드 */
-div[data-testid="metric-container"] {
-
-    background: white;
-
-    border-radius: 24px;
-
-    padding: 22px;
-
-    border: 1px solid #ececec;
-
-    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
-}
-
-/* 입력창 */
-.stTextInput > div > div > input {
-
-    border-radius: 14px;
-
-    height: 52px;
-
-    border: 1px solid #d1d5db;
-
-    font-size: 16px;
-}
-
-/* 버튼 */
-.stButton > button {
-
-    width: 100%;
-
-    border-radius: 14px;
-
-    height: 52px;
-
-    border: none;
-
-    background-color: #2563eb;
-
-    color: white;
-
-    font-weight: 700;
-
-    font-size: 16px;
-}
-
-</style>
-""", unsafe_allow_html=True)
-# --------------------------
-# CSS 스타일
-# --------------------------
-st.markdown("""
-<style>
-
-.main {
-    background-color: #f5f6f8;
-}
-
-.block-container {
-    padding-top: 2rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-}
-
-h1 {
-    color: #111827;
-    font-weight: 800;
-}
-
-div[data-testid="metric-container"] {
-    background-color: white;
-    border-radius: 14px;
-    padding: 18px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0px 1px 5px rgba(0,0,0,0.05);
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-# --------------------------
-# 제목
-# --------------------------
-st.title("📈 국내 주식 분석기")
-
-st.caption("네이버증권 스타일")
-
-# --------------------------
-# 종목 리스트
-# --------------------------
-stocks = {
-    "삼성전자": "005930",
-    "SK하이닉스": "000660",
-    "LG에너지솔루션": "373220",
-    "현대차": "005380",
-    "기아": "000270"
-}
-favorites = [
-    "삼성전자",
-    "SK하이닉스",
-    "현대차"
-]
-# --------------------------
-# 사이드바 관심종목
-# --------------------------
-
-with st.sidebar:
-
-    st.title("⭐ 관심종목")
-
-    selected_stock = st.selectbox(
-
-        "선택",
-
-        favorites
-    )
-
-    if st.button("관심종목 불러오기"):
-
-        user_input = selected_stock
 # --------------------------
 # 검색창
 # --------------------------
@@ -158,9 +42,29 @@ with st.sidebar:
 col1, col2 = st.columns([5,1])
 
 with col1:
-    user_input = st.text_input(
-        "종목명 또는 종목코드",
-        selected_stock
+
+    search = st.text_input(
+        "종목명 검색",
+        placeholder="삼성전자, 삼성전기, 한화오션 입력"
+    )
+
+    # 검색어 없으면 일부만 표시
+    if search == "":
+        filtered_stocks = stock_names[:50]
+
+    else:
+        filtered_stocks = [
+            stock for stock in stock_names
+            if search.lower() in stock.lower()
+        ]
+
+    if len(filtered_stocks) == 0:
+        st.warning("검색 결과 없음")
+        st.stop()
+
+    user_input = st.selectbox(
+        "검색 결과",
+        filtered_stocks
     )
 
 with col2:
@@ -169,16 +73,19 @@ with col2:
     search_btn = st.button("검색")
 
 # --------------------------
-# 코드 처리
+# 종목코드 찾기
 # --------------------------
-if user_input.isdigit():
-    code = user_input
-else:
-    code = stocks.get(user_input)
 
-    if code is None:
-        st.error("지원하지 않는 종목입니다.")
-        st.stop()
+code = listing.loc[
+    listing['Name'] == user_input,
+    'Code'
+].values[0]
+
+
+
+
+
+
 
 # --------------------------
 # --------------------------
@@ -208,6 +115,7 @@ else:
     start_date = "2022-01-01"
 # 데이터 가져오기
 # --------------------------
+today = datetime.today().strftime("%Y%m%d")
 df = fdr.DataReader(code, start=start_date)
 
 if df.empty:
@@ -404,10 +312,64 @@ st.subheader("📊 기술 지표")
 
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric("PER", "18.3")
-col2.metric("PBR", "1.87")
-col3.metric("ROE", "10.8%")
-col4.metric("RSI", "62.4")
+# --------------------------
+# 펀더멘털 데이터
+# --------------------------
+
+
+
+
+
+# --------------------------
+# 펀더멘털 데이터
+# --------------------------
+
+try:
+
+    fundamental = stock.get_market_fundamental_by_ticker(today)
+
+    fundamental_row = fundamental.loc[code]
+
+    per = round(fundamental_row['PER'], 2)
+    pbr = round(fundamental_row['PBR'], 2)
+    div = round(fundamental_row['DIV'], 2)
+
+except:
+
+    per = 0
+    pbr = 0
+    div = 0
+
+
+
+# RSI 계산
+delta = df['Close'].diff()
+
+up = delta.clip(lower=0)
+down = -1 * delta.clip(upper=0)
+
+ma_up = up.rolling(14).mean()
+ma_down = down.rolling(14).mean()
+
+rs = ma_up / ma_down
+
+rsi = 100 - (100 / (1 + rs))
+
+rsi_value = round(rsi.iloc[-1], 2)
+
+# 출력
+col1, col2, col3, col4 = st.columns(4)
+
+col1.metric("PER", per)
+col2.metric("PBR", pbr)
+col3.metric("배당수익률", f"{div}%")
+col4.metric("RSI", rsi_value)
+st.divider()
+
+
+
+
+
 
 st.divider()
 # --------------------------
@@ -418,8 +380,8 @@ score = 50
 
 # 20일선 위
 if ma20 == ma20:
-    if current_price > ma20:
-        score += 1
+   if current_price > ma20:
+    score += 15
 
 # 60일선 위
 if ma60 == ma60:
@@ -434,8 +396,40 @@ if volume > df['Volume'].mean():
 if change_rate > 0:
     score += 10
 
+# PER 저평가
+if per < 10:
+    score += 10
+
+# 고배당
+if div > 3:
+    score += 10
+
+# RSI 과매도
+if rsi_value < 35:
+    score += 5
+
 # 점수 제한
 score = min(score, 100)
+
+# --------------------------
+# AI 등급
+# --------------------------
+
+if score >= 80:
+    grade = "🔥 강한 매수"
+    grade_color = "#22c55e"
+
+elif score >= 65:
+    grade = "👍 매수 우세"
+    grade_color = "#84cc16"
+
+elif score >= 50:
+    grade = "😐 중립"
+    grade_color = "#f59e0b"
+
+else:
+    grade = "⚠ 주의"
+    grade_color = "#ef4444"
 
 # --------------------------
 # AI 점수 카드
@@ -477,7 +471,12 @@ AI 종합 점수
 <p style="color:gray;">
 이동평균선 / 거래량 / 추세 기반 분석
 </p>
-
+<h2 style="
+color:{grade_color};
+margin-top:10px;
+">
+{grade}
+</h2>
 </div>
 
 """, unsafe_allow_html=True)
