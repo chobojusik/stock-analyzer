@@ -208,11 +208,10 @@ st.divider()
 fig = go.Figure()
 
 # 캔들
+
+# 캔들
 fig.add_trace(go.Candlestick(
-  increasing_line_color='#ef4444',
-decreasing_line_color='#3b82f6',
-increasing_fillcolor='#ef4444',
-decreasing_fillcolor='#3b82f6',
+
     x=df.index,
 
     open=df['Open'],
@@ -220,11 +219,15 @@ decreasing_fillcolor='#3b82f6',
     low=df['Low'],
     close=df['Close'],
 
-    increasing_line_color='red',
-    decreasing_line_color='blue',
+    increasing_line_color='#ef4444',
+    decreasing_line_color='#3b82f6',
+
+    increasing_fillcolor='#ef4444',
+    decreasing_fillcolor='#3b82f6',
 
     name='주가'
 ))
+
 fig.add_trace(go.Bar(
     x=df.index,
     y=df['Volume'],
