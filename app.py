@@ -356,8 +356,6 @@ st.divider()
 # --------------------------
 st.subheader("🤖 AI 분석")
 
-st.subheader("🤖 AI 분석")
-
 st.markdown("""
 <div style="
 background:white;
