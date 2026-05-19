@@ -361,11 +361,20 @@ fig.update_layout(
     xaxis_rangeslider_visible=False,
 
     yaxis=dict(
-        title='주가',
-        side='right',
-        showgrid=True,
-        gridcolor='rgba(0,0,0,0.05)'
-    ),
+
+    title='가격 (원)',
+
+    side='right',
+
+    tickformat=',',
+
+    showgrid=True,
+
+    gridcolor='rgba(0,0,0,0.05)'
+),
+xaxis=dict(
+    tickformat='%Y-%m-%d'
+),      
 
     yaxis2=dict(
         title='거래량',
