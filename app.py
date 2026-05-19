@@ -209,6 +209,10 @@ fig = go.Figure()
 
 # 캔들
 fig.add_trace(go.Candlestick(
+  increasing_line_color='#ef4444',
+decreasing_line_color='#3b82f6',
+increasing_fillcolor='#ef4444',
+decreasing_fillcolor='#3b82f6',
     x=df.index,
 
     open=df['Open'],
@@ -220,6 +224,13 @@ fig.add_trace(go.Candlestick(
     decreasing_line_color='blue',
 
     name='주가'
+))
+fig.add_trace(go.Bar(
+    x=df.index,
+    y=df['Volume'],
+    name='거래량',
+    marker_color='rgba(37,99,235,0.25)',
+    yaxis='y2'
 ))
 
 # 20일선
@@ -266,17 +277,52 @@ fig.add_trace(go.Scatter(
 # --------------------------
 fig.update_layout(
 
-height=850,
+    height=850,
 
-template='plotly_white',
+    template='plotly_white',
 
-paper_bgcolor='#f5f7fb',
+    paper_bgcolor='#f5f7fb',
 
-plot_bgcolor='white',
+    plot_bgcolor='white',
 
-hovermode='x unified',
+    hovermode='x unified',
 
-xaxis_rangeslider_visible=False
+    margin=dict(
+        l=20,
+        r=20,
+        t=30,
+        b=20
+    ),
+
+    font=dict(
+        family='Arial',
+        size=14,
+        color='#111827'
+    ),
+
+    legend=dict(
+        orientation='h',
+        yanchor='bottom',
+        y=1.02,
+        xanchor='right',
+        x=1
+    ),
+
+    xaxis_rangeslider_visible=False,
+
+    yaxis=dict(
+        title='주가',
+        side='right',
+        showgrid=True,
+        gridcolor='rgba(0,0,0,0.05)'
+    ),
+
+    yaxis2=dict(
+        title='거래량',
+        overlaying='y',
+        side='left',
+        showgrid=False
+    )
 )
 # --------------------------
 # 차트 출력
@@ -307,6 +353,24 @@ st.divider()
 # --------------------------
 st.subheader("🤖 AI 분석")
 
-st.success("상승 추세가 유지되고 있습니다.")
-st.info("20일선 위에서 안정적인 흐름입니다.")
-st.warning("단기 변동성 확대 가능성 주의.")
+st.subheader("🤖 AI 분석")
+
+st.markdown("""
+<div style="
+background:white;
+padding:25px;
+border-radius:24px;
+box-shadow:0 8px 25px rgba(0,0,0,0.06);
+margin-bottom:20px;
+">
+
+<h4>📈 상승 추세 유지</h4>
+
+<p>20일 이동평균선 위에서 안정적인 흐름입니다.</p>
+
+<p style="color:#f59e0b;">
+⚠ 단기 변동성 확대 가능성 주의
+</p>
+
+</div>
+""", unsafe_allow_html=True)
