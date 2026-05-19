@@ -9,7 +9,76 @@ st.set_page_config(
     page_title="네이버 스타일 주식 분석기",
     layout="wide"
 )
+st.markdown("""
+<style>
 
+/* 전체 배경 */
+.main {
+    background-color: #f5f7fb;
+}
+
+/* 전체 여백 */
+.block-container {
+    padding-top: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+/* 제목 */
+h1 {
+    font-size: 42px;
+    font-weight: 800;
+    color: #111827;
+}
+
+/* metric 카드 */
+div[data-testid="metric-container"] {
+
+    background: white;
+
+    border-radius: 24px;
+
+    padding: 22px;
+
+    border: 1px solid #ececec;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
+/* 입력창 */
+.stTextInput > div > div > input {
+
+    border-radius: 14px;
+
+    height: 52px;
+
+    border: 1px solid #d1d5db;
+
+    font-size: 16px;
+}
+
+/* 버튼 */
+.stButton > button {
+
+    width: 100%;
+
+    border-radius: 14px;
+
+    height: 52px;
+
+    border: none;
+
+    background-color: #2563eb;
+
+    color: white;
+
+    font-weight: 700;
+
+    font-size: 16px;
+}
+
+</style>
+""", unsafe_allow_html=True)
 # --------------------------
 # CSS 스타일
 # --------------------------
@@ -197,43 +266,18 @@ fig.add_trace(go.Scatter(
 # --------------------------
 fig.update_layout(
 
-    height=760,
+height=850,
 
-    template='plotly_white',
+template='plotly_white',
 
-    paper_bgcolor='#f5f6f8',
-    plot_bgcolor='white',
+paper_bgcolor='#f5f7fb',
 
-    hovermode='x unified',
+plot_bgcolor='white',
 
-    margin=dict(
-        l=20,
-        r=20,
-        t=30,
-        b=20
-    ),
+hovermode='x unified',
 
-    font=dict(
-        family='Arial',
-        size=14,
-        color='#111827'
-    ),
-
-    legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=1.02,
-        xanchor="right",
-        x=1
-    ),
-
-    xaxis_rangeslider_visible=False,
-
-    yaxis=dict(
-        tickformat=","
-    )
+xaxis_rangeslider_visible=False
 )
-
 # --------------------------
 # 차트 출력
 # --------------------------
