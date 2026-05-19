@@ -154,12 +154,13 @@ with st.sidebar:
 # --------------------------
 # 검색창
 # --------------------------
+
 col1, col2 = st.columns([5,1])
 
 with col1:
     user_input = st.text_input(
         "종목명 또는 종목코드",
-        "삼성전자"
+        selected_stock
     )
 
 with col2:
