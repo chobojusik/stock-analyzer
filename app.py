@@ -346,7 +346,24 @@ except:
 
 
 
+# 골든/데드크로스 계산
+ma5_now = df['MA5'].iloc[-1]
+ma20_now = df['MA20'].iloc[-1]
 
+ma5_prev = df['MA5'].iloc[-2]
+ma20_prev = df['MA20'].iloc[-2]
+
+if ma5_prev < ma20_prev and ma5_now > ma20_now:
+    cross_signal = "🟢 골든크로스"
+
+elif ma5_prev > ma20_prev and ma5_now < ma20_now:
+    cross_signal = "🔴 데드크로스"
+
+elif ma5_now > ma20_now:
+    cross_signal = "🟢 상승 유지"
+
+else:
+    cross_signal = "🔴 하락 유지"
 # RSI 계산
 delta = df['Close'].diff()
 
@@ -367,9 +384,9 @@ col1, col2, col3 = st.columns(3)
 
 col1.metric("PER", per)
 col2.metric("PBR", pbr)
-col4.metric("RSI", rsi_value)
-st.divider()
+col3.metric("RSI", rsi_value)
 
+st.metric("크로스", cross_signal)
 
 
 
