@@ -259,7 +259,7 @@ fig.add_trace(go.Scatter(
 # --------------------------
 fig.update_layout(
 
-    height=850,
+    height=700,
 
     template='plotly_white',
 
