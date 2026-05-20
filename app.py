@@ -16,11 +16,19 @@ st_autorefresh(interval=60000, key="refresh")
 @st.cache_data
 def load_data():
 
-    listing = fdr.StockListing('KRX')
+    try:
+        listing = fdr.StockListing('KRX')
+        listing = listing.drop_duplicates(subset='Code')
 
-    listing = listing.drop_duplicates(subset='Code')
+    except:
+        listing = pd.DataFrame({
+            'Code': ['005930', '000660', '035420', '005380'],
+            'Name': ['삼성전자', 'SK하이닉스', 'NAVER', '현대차']
+        })
 
     return listing
+
+    
 
 listing = load_data()
 st.set_page_config(
@@ -125,6 +133,7 @@ if df.empty:
 # --------------------------
 # 이동평균선
 # --------------------------
+df['MA5'] = df['Close'].rolling(5).mean()
 df['MA20'] = df['Close'].rolling(20).mean()
 df['MA60'] = df['Close'].rolling(60).mean()
 df['MA120'] = df['Close'].rolling(120).mean()
@@ -195,6 +204,18 @@ fig.add_trace(go.Bar(
 ma20 = df['MA20'].iloc[-1]
 ma60 = df['MA60'].iloc[-1]
 
+# 5일선
+fig.add_trace(go.Scatter(
+    x=df.index,
+    y=df['MA5'],
+
+    line=dict(
+        color='red',
+        width=2
+    ),
+
+    name='5일선'
+))
 # 20일선
 fig.add_trace(go.Scatter(
     x=df.index,
@@ -300,7 +321,7 @@ xaxis=dict(
 # --------------------------
 st.plotly_chart(
     fig,
-    use_container_width=True
+    width='stretch'
 )
 
 st.divider()
@@ -355,7 +376,10 @@ st.divider()
 # --------------------------
 
 score = 50
-
+ma5 = df['MA5'].iloc[-1]
+if ma5 == ma5:
+    if current_price > ma5:
+        score += 10
 # 20일선 위
 if ma20 == ma20:
    if current_price > ma20:
