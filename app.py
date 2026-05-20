@@ -2,7 +2,6 @@ import streamlit as st
 import FinanceDataReader as fdr
 import plotly.graph_objects as go
 import pandas as pd
-
 from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 st_autorefresh(interval=60000, key="refresh")
