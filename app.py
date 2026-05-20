@@ -2,7 +2,7 @@ import streamlit as st
 import FinanceDataReader as fdr
 import plotly.graph_objects as go
 import pandas as pd
-
+from pykrx import stock
 from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 st_autorefresh(interval=60000, key="refresh")
@@ -123,7 +123,7 @@ else:
     start_date = "2022-01-01"
 # 데이터 가져오기
 # --------------------------
-
+today = datetime.today().strftime("%Y%m%d")
 df = fdr.DataReader(code, start=start_date)
 
 if df.empty:
@@ -335,15 +335,10 @@ col1, col2, col3, col4 = st.columns(4)
 
 # 임시 펀더멘털 값
 try:
-    per = round(listing.loc[
-        listing['Code'] == code,
-        'PER'
-    ].values[0], 2)
+    fundamental = stock.get_market_fundamental_by_ticker(today)
 
-    pbr = round(listing.loc[
-        listing['Code'] == code,
-        'PBR'
-    ].values[0], 2)
+    per = round(fundamental.loc[code]['PER'], 2)
+    pbr = round(fundamental.loc[code]['PBR'], 2)
 
 except:
     per = 0
