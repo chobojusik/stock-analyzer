@@ -17,7 +17,7 @@ st_autorefresh(interval=60000, key="refresh")
 def load_data():
 
     try:
-        listing = fdr.StockListing('KRX')
+        listing = pd.read_csv('stocks.csv')
         listing = listing.drop_duplicates(subset='Code')
 
     except:
