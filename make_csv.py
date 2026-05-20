@@ -1,6 +1,6 @@
 import FinanceDataReader as fdr
 
-listing = fdr.StockListing('KRX')
+listing = fdr.StockListing('KRX-MARCAP')
 
 listing[['Code','Name']].to_csv(
     'stocks.csv',

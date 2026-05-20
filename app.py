@@ -334,9 +334,20 @@ st.subheader("📊 기술 지표")
 col1, col2, col3, col4 = st.columns(4)
 
 # 임시 펀더멘털 값
-per = 0
-pbr = 0
-div = 0
+try:
+    per = round(listing.loc[
+        listing['Code'] == code,
+        'PER'
+    ].values[0], 2)
+
+    pbr = round(listing.loc[
+        listing['Code'] == code,
+        'PBR'
+    ].values[0], 2)
+
+except:
+    per = 0
+    pbr = 0
 
 
 
@@ -357,11 +368,10 @@ rsi = 100 - (100 / (1 + rs))
 rsi_value = round(rsi.iloc[-1], 2)
 
 # 출력
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3 = st.columns(3)
 
 col1.metric("PER", per)
 col2.metric("PBR", pbr)
-col3.metric("배당수익률", f"{div}%")
 col4.metric("RSI", rsi_value)
 st.divider()
 
@@ -402,9 +412,7 @@ if change_rate > 0:
 if per < 10:
     score += 10
 
-# 고배당
-if div > 3:
-    score += 10
+
 
 # RSI 과매도
 if rsi_value < 35:
