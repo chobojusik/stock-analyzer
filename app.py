@@ -2,7 +2,7 @@ import streamlit as st
 import FinanceDataReader as fdr
 import plotly.graph_objects as go
 import pandas as pd
-from pykrx import stock
+
 from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 st_autorefresh(interval=60000, key="refresh")
@@ -333,16 +333,9 @@ st.subheader("📊 기술 지표")
 
 col1, col2, col3, col4 = st.columns(4)
 
-# 임시 펀더멘털 값
-try:
-    fundamental = stock.get_market_fundamental_by_ticker(today)
 
-    per = round(fundamental.loc[code]['PER'], 2)
-    pbr = round(fundamental.loc[code]['PBR'], 2)
 
-except:
-    per = 0
-    pbr = 0
+    
 
 
 
@@ -380,13 +373,10 @@ rsi = 100 - (100 / (1 + rs))
 rsi_value = round(rsi.iloc[-1], 2)
 
 # 출력
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 
-col1.metric("PER", per)
-col2.metric("PBR", pbr)
-col3.metric("RSI", rsi_value)
-
-st.metric("크로스", cross_signal)
+col1.metric("RSI", rsi_value)
+col2.metric("크로스", cross_signal)
 
 
 
@@ -420,9 +410,7 @@ if volume > df['Volume'].mean():
 if change_rate > 0:
     score += 10
 
-# PER 저평가
-if per < 10:
-    score += 10
+
 
 
 

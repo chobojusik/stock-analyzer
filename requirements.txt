@@ -2,6 +2,6 @@ streamlit
 plotly
 pandas
 streamlit-autorefresh
-pykrx
+
 setuptools
 wheel
