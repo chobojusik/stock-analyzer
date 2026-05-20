@@ -356,6 +356,21 @@ elif ma5_now > ma20_now:
 
 else:
     cross_signal = "🔴 하락 유지"
+# 최근 수익률 계산
+try:
+    week_return = ((df['Close'].iloc[-1] / df['Close'].iloc[-5]) - 1) * 100
+except:
+    week_return = 0
+
+try:
+    month_return = ((df['Close'].iloc[-1] / df['Close'].iloc[-20]) - 1) * 100
+except:
+    month_return = 0
+
+try:
+    three_month_return = ((df['Close'].iloc[-1] / df['Close'].iloc[-60]) - 1) * 100
+except:
+    three_month_return = 0   
 # RSI 계산
 delta = df['Close'].diff()
 
@@ -371,12 +386,31 @@ rsi = 100 - (100 / (1 + rs))
 
 rsi_value = round(rsi.iloc[-1], 2)
 
-# 출력
-col1, col2 = st.columns(2)
+# RSI + 크로스
+rsi_col, cross_col = st.columns(2)
 
-col1.metric("RSI", rsi_value)
-col2.metric("크로스", cross_signal)
+rsi_col.metric("RSI", rsi_value)
+cross_col.metric("크로스", cross_signal)
 
+# 최근 수익률
+st.subheader("📈 최근 수익률")
+
+week_col, month_col, three_col = st.columns(3)
+
+week_col.metric(
+    "1주",
+    f"{week_return:.2f}%"
+)
+
+month_col.metric(
+    "1개월",
+    f"{month_return:.2f}%"
+)
+
+three_col.metric(
+    "3개월",
+    f"{three_month_return:.2f}%"
+)
 
 
 
