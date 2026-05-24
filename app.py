@@ -12,7 +12,7 @@ st_autorefresh(interval=60000, key="refresh")
 # 전체 종목 가져오기
 # --------------------------
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_data():
 
     try:
