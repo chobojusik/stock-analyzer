@@ -1,7 +1,7 @@
 streamlit
 plotly
 pandas
-FinanceDataReader
+finance-datareader
 streamlit-autorefresh
 setuptools
 pykrx
