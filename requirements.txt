@@ -5,4 +5,3 @@ FinanceDataReader
 streamlit-autorefresh
 setuptools
 pykrx
-# test
